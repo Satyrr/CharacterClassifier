@@ -15,6 +15,7 @@ class CharacterClassifier(pl.LightningModule):
 
         self.train_acc = pl.metrics.Accuracy()
         self.valid_acc = pl.metrics.Accuracy()
+        self.test_acc = pl.metrics.Accuracy()
 
     def forward(self, x):
         x = self.model(x)
@@ -32,10 +33,6 @@ class CharacterClassifier(pl.LightningModule):
         self.log('train_acc', self.train_acc(preds, y),  prog_bar=True)
 
         return loss
-
-    def training_epoch_end(self, outs):
-        print(outs)
-        #self.train_acc.compute()
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
@@ -55,8 +52,10 @@ class CharacterClassifier(pl.LightningModule):
         y = y.flatten()
         output = self.forward(x)
         loss = nn.CrossEntropyLoss()(output, y)
+        preds = torch.argmax(output, dim=1)
 
         self.log('test_loss', loss, prog_bar=True)
+        self.log('test_acc', self.test_acc(preds, y))
 
         return {'loss': loss}
 
