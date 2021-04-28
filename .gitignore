@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/character_classifier/data/train.pkl
+/character_classifier/storage/
