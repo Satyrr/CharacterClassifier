@@ -10,12 +10,13 @@ from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import transforms
 
 from character_classifier.src.datasets.dataset import BatchIndexedDataset
+from character_classifier.settings import PROJECT_DIR
 
 
 class CharactersDataModule(LightningDataModule):
     def __init__(
             self,
-            data_dir: str = "data/",
+            data_dir: str = PROJECT_DIR / 'data',
             train_val_test_split: Tuple[int, int, int] = (22_634, 2_500, 5_000),
             batch_size: int = 64,
             num_workers: int = 0,
