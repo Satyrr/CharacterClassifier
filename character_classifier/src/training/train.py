@@ -1,6 +1,5 @@
 import pytorch_lightning as pl
 import torch
-import torch.nn as nn
 import torch.utils.data
 from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -8,6 +7,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from character_classifier.src.datasets.datamodule import CharactersDataModule
 from character_classifier.src.models.classifier import CharacterClassifier
 from character_classifier.settings import STORAGE_DIR
+
 
 def train(model_cls, lr=0.01, num_epochs=3, batch_size=64):
     """Train classifier."""
@@ -48,6 +48,6 @@ def train(model_cls, lr=0.01, num_epochs=3, batch_size=64):
 
     model.load_state_dict(checkpoint['state_dict'])
 
-    result = model.test(test_dataloaders=test_loader)
+    result = trainer.test(test_dataloaders=test_loader)
 
     return result
