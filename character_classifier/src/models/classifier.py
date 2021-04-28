@@ -6,10 +6,11 @@ import torch.utils.data
 
 class CharacterClassifier(pl.LightningModule):
     def __init__(self, model_cls, lr: float = 0.01, kernel_size_1: int = 5,
-                 kernel_size_2: int = 5):
+                 kernel_size_2: int = 5, **kwargs):
         super().__init__()
 
         self.save_hyperparameters()
+        self.save_hyperparameters(kwargs)
 
         self.model = model_cls(self.hparams).float()
 

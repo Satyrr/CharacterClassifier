@@ -9,7 +9,7 @@ from character_classifier.src.models.classifier import CharacterClassifier
 from character_classifier.settings import STORAGE_DIR
 
 
-def train(model_cls, lr=0.01, num_epochs=3, batch_size=64):
+def train(model_cls, lr=0.01, num_epochs=3, batch_size=64, **kwargs):
     """Train classifier."""
     pl.seed_everything(42)
 
@@ -21,7 +21,7 @@ def train(model_cls, lr=0.01, num_epochs=3, batch_size=64):
     val_loader = data_module.val_dataloader()
     test_loader = data_module.test_dataloader()
 
-    model = CharacterClassifier(model_cls=model_cls, lr=lr)
+    model = CharacterClassifier(model_cls=model_cls, lr=lr, **kwargs)
 
     logging_path = STORAGE_DIR.joinpath('logs')
     checkpoint_path = STORAGE_DIR.joinpath('models')
