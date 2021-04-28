@@ -1,25 +1,25 @@
-from typing import Optional, Tuple
-
-from pytorch_lightning import LightningDataModule
-from torch.utils.data import DataLoader, Dataset, random_split
-from CharacterClassifier.character_classifier.src.datasets.dataset import BatchIndexedDataset
-#from torchvision.transforms import transforms
-
-import requests
-import zipfile
 import io
 import os
+import zipfile
+from typing import Optional, Tuple
+
+import requests
+from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader, Dataset, random_split
+from torchvision.transforms import transforms
+
+from character_classifier.src.datasets.dataset import BatchIndexedDataset
 
 
 class CharactersDataModule(LightningDataModule):
     def __init__(
-        self,
-        data_dir: str = "data/",
-        train_val_test_split: Tuple[int, int, int] = (22_634, 2_500, 5_000),
-        batch_size: int = 64,
-        num_workers: int = 0,
-        pin_memory: bool = False,
-        **kwargs,
+            self,
+            data_dir: str = "data/",
+            train_val_test_split: Tuple[int, int, int] = (22_634, 2_500, 5_000),
+            batch_size: int = 64,
+            num_workers: int = 0,
+            pin_memory: bool = False,
+            **kwargs,
     ):
         super().__init__()
 
@@ -31,9 +31,10 @@ class CharactersDataModule(LightningDataModule):
         self.num_workers = num_workers
         self.pin_memory = pin_memory
 
-        # self.transforms = transforms.Compose(
-        #     [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
-        # )
+        self.transforms = transforms.Compose(
+            [transforms.Normalize((0.1556,), (0.363,))]
+
+        )
 
         # self.dims is returned when you call datamodule.size()
         self.dims = (1, 56, 56)
@@ -51,7 +52,8 @@ class CharactersDataModule(LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
-        dataset = BatchIndexedDataset(self.data_path)
+
+        dataset = BatchIndexedDataset(self.data_path, transform=self.transforms)
         self.data_train, self.data_val, self.data_test = random_split(
             dataset, self.train_val_test_split
         )
