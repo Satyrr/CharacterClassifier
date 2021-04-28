@@ -4,6 +4,7 @@ import zipfile
 from typing import Optional, Tuple
 
 import requests
+import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import transforms
@@ -55,7 +56,8 @@ class CharactersDataModule(LightningDataModule):
 
         dataset = BatchIndexedDataset(self.data_path, transform=self.transforms)
         self.data_train, self.data_val, self.data_test = random_split(
-            dataset, self.train_val_test_split
+            dataset, self.train_val_test_split,
+            generator=torch.Generator().manual_seed(42)
         )
 
     def train_dataloader(self):
