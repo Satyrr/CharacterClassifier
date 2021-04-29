@@ -2,7 +2,8 @@ import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.utils.data
-
+from sklearn.metrics import classification_report
+import numpy as np
 
 class CharacterClassifier(pl.LightningModule):
     def __init__(self, model_cls, lr: float = 0.01, kernel_size_1: int = 5,
@@ -58,7 +59,13 @@ class CharacterClassifier(pl.LightningModule):
         self.log('test_loss', loss, prog_bar=True)
         self.log('test_acc', self.test_acc(preds, y))
 
-        return {'loss': loss}
+        return {'loss': loss, 'y': y, 'y_hat': preds}
+
+    def test_epoch_end(self, outputs):
+        preds = np.hstack([x['y_hat'].cpu().numpy() for x in outputs])
+        y = np.hstack([x['y'].cpu().numpy() for x in outputs])
+
+        print(classification_report(y, preds))
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams['lr'])
