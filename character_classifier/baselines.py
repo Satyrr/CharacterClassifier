@@ -29,7 +29,7 @@ if __name__ == '__main__':
     test_x = test_x.reshape(test_x.shape[0], -1)
     test_y = np.hstack([y.numpy().flatten() for (_, y) in test_data])
 
-    clf = LogisticRegression(random_state=0, max_iter=10)
+    clf = LogisticRegression(random_state=0, max_iter=1000)
     clf.fit(train_x, train_y)
     predictions = clf.predict(test_x)
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     print('Accuracy = {}'.format(results['accuracy']))
     print('Macro f1 = {}'.format(results['macro avg']['f1-score']))
 
-    clf = SVC(random_state=0, max_iter=10)
+    clf = SVC(random_state=0, max_iter=1000)
     clf.fit(train_x, train_y)
     predictions = clf.predict(test_x)
 
