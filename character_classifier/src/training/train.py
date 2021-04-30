@@ -38,7 +38,10 @@ def train(model_cls: type, lr: float = 0.01, num_epochs: int = 3, batch_size: in
 
     tb_logger = pl_loggers.TensorBoardLogger(logging_path)
 
-    trainer = pl.Trainer(gpus=1 if torch.cuda.is_available() else 0,
+    is_gpu_available = torch.cuda.is_available()
+    gpu_number = 1 if is_gpu_available else 0
+
+    trainer = pl.Trainer(gpus=gpu_number,
                          max_epochs=num_epochs,
                          progress_bar_refresh_rate=20,
                          checkpoint_callback=checkpoint_callback,
