@@ -26,8 +26,8 @@ def train(model_cls: type, lr: float = 0.01, num_epochs: int = 3, batch_size: in
 
     model = CharacterClassifier(model_cls=model_cls, lr=lr, **kwargs)
 
-    logging_path = STORAGE_DIR.joinpath('logs')
-    checkpoint_path = STORAGE_DIR.joinpath('models')
+    logging_path = STORAGE_DIR / 'logs'
+    checkpoint_path = STORAGE_DIR / 'models'
 
     checkpoint_callback = ModelCheckpoint(
         dirpath=checkpoint_path,
