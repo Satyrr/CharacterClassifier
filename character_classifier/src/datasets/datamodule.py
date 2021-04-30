@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import transforms
 
 from character_classifier.src.datasets.dataset import BatchIndexedDataset
-from character_classifier.settings import PROJECT_DIR
+from character_classifier.settings import PROJECT_DIR, DATA_URL
 
 
 class CharactersDataModule(LightningDataModule):
@@ -47,7 +47,7 @@ class CharactersDataModule(LightningDataModule):
 
     def prepare_data(self):
         if not os.path.exists(self.data_path):
-            download_link = 'https://drive.google.com/u/0/uc?id=1U2PqJLqsCbi12AvhQEOQnuHm1v3w7fkh&export=download'
+            download_link = DATA_URL
             r = requests.get(download_link)
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall(self.data_dir)
