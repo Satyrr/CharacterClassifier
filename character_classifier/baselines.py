@@ -36,8 +36,10 @@ if __name__ == '__main__':
     results = classification_report(test_y, predictions, output_dict=True)
 
     print('Logistic regression results')
-    print('Accuracy = {}'.format(results['accuracy']))
-    print('Macro f1 = {}'.format(results['macro avg']['f1-score']))
+    accuracy = results['accuracy']
+    f1 = results['macro avg']['f1-score']
+    print(f'Accuracy = {accuracy}')
+    print(f'Macro f1 = {f1}')
 
     clf = SVC(random_state=0, max_iter=1000)
     clf.fit(train_x, train_y)
@@ -46,5 +48,7 @@ if __name__ == '__main__':
     results = classification_report(test_y, predictions, output_dict=True)
 
     print('SVM results')
-    print('Accuracy = {}'.format(results['accuracy']))
-    print('Macro f1 = {}'.format(results['macro avg']['f1-score']))
+    accuracy = results['accuracy']
+    f1 = results['macro avg']['f1-score']
+    print(f'Accuracy = {accuracy}')
+    print(f'Macro f1 = {f1}')
