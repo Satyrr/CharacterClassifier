@@ -1,9 +1,12 @@
+from typing import Tuple, Dict, Any
+
+import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.utils.data
 from sklearn.metrics import classification_report
-import numpy as np
+
 
 class CharacterClassifier(pl.LightningModule):
     def __init__(self, model_cls, lr: float = 0.01, kernel_size_1: int = 5,
@@ -19,11 +22,11 @@ class CharacterClassifier(pl.LightningModule):
         self.valid_acc = pl.metrics.Accuracy()
         self.test_acc = pl.metrics.Accuracy()
 
-    def forward(self, x):
+    def forward(self, x: torch.FloatTensor) -> torch.FloatTensor:
         x = self.model(x)
         return x
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch: Tuple[torch.FloatTensor, torch.LongTensor], batch_idx: int) -> torch.FloatTensor:
         x, y = batch
         y = y.flatten()
         output = self.forward(x)
@@ -31,12 +34,13 @@ class CharacterClassifier(pl.LightningModule):
 
         loss = nn.CrossEntropyLoss()(output, y)
 
-        self.log('train_loss',  loss, on_epoch=True)
-        self.log('train_acc', self.train_acc(preds, y),  prog_bar=True)
+        self.log('train_loss', loss, on_epoch=True)
+        self.log('train_acc', self.train_acc(preds, y), prog_bar=True)
 
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch: Tuple[torch.FloatTensor, torch.LongTensor], batch_idx: int) \
+            -> Dict[str, Any]:
         x, y = batch
         y = y.flatten()
         output = self.forward(x)
@@ -44,12 +48,13 @@ class CharacterClassifier(pl.LightningModule):
 
         loss = nn.CrossEntropyLoss()(output, y)
 
-        self.log('valid_loss', loss,  prog_bar=True)
-        self.log('valid_acc', self.valid_acc(preds, y),  prog_bar=True)
+        self.log('valid_loss', loss, prog_bar=True)
+        self.log('valid_acc', self.valid_acc(preds, y), prog_bar=True)
 
         return {'loss': loss}
 
-    def test_step(self, batch, batch_idx):
+    def test_step(self, batch: Tuple[torch.FloatTensor, torch.LongTensor], batch_idx: int) \
+            -> Dict[str, Any]:
         x, y = batch
         y = y.flatten()
         output = self.forward(x)
@@ -61,12 +66,12 @@ class CharacterClassifier(pl.LightningModule):
 
         return {'loss': loss, 'y': y, 'y_hat': preds}
 
-    def test_epoch_end(self, outputs):
+    def test_epoch_end(self, outputs: Dict[str, Any]) -> None:
         preds = np.hstack([x['y_hat'].cpu().numpy() for x in outputs])
         y = np.hstack([x['y'].cpu().numpy() for x in outputs])
 
         print(classification_report(y, preds))
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> torch.optim.Optimizer:
         optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams['lr'])
         return optimizer

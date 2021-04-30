@@ -9,8 +9,8 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, Dataset, random_split
 from torchvision.transforms import transforms
 
-from character_classifier.src.datasets.dataset import BatchIndexedDataset
 from character_classifier.settings import PROJECT_DIR, DATA_URL
+from character_classifier.src.datasets.dataset import BatchIndexedDataset
 
 
 class CharactersDataModule(LightningDataModule):
@@ -26,7 +26,7 @@ class CharactersDataModule(LightningDataModule):
         super().__init__()
 
         self.data_dir = data_dir
-        self.data_path = os.path.join(self.data_dir, 'train.pkl')
+        self.data_path = self.data_dir / 'train.pkl'
 
         self.train_val_test_split = train_val_test_split
         self.batch_size = batch_size
@@ -45,14 +45,14 @@ class CharactersDataModule(LightningDataModule):
         self.data_val: Optional[Dataset] = None
         self.data_test: Optional[Dataset] = None
 
-    def prepare_data(self):
+    def prepare_data(self) -> None:
         if not os.path.exists(self.data_path):
             download_link = DATA_URL
             r = requests.get(download_link)
             z = zipfile.ZipFile(io.BytesIO(r.content))
             z.extractall(self.data_dir)
 
-    def setup(self, stage: Optional[str] = None):
+    def setup(self, stage: Optional[str] = None) -> None:
         """Load data. Set variables: self.data_train, self.data_val, self.data_test."""
 
         dataset = BatchIndexedDataset(self.data_path, transform=self.transforms)
@@ -61,7 +61,7 @@ class CharactersDataModule(LightningDataModule):
             generator=torch.Generator().manual_seed(42)
         )
 
-    def train_dataloader(self):
+    def train_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_train,
             batch_size=self.batch_size,
@@ -70,7 +70,7 @@ class CharactersDataModule(LightningDataModule):
             shuffle=True,
         )
 
-    def val_dataloader(self):
+    def val_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_val,
             batch_size=self.batch_size,
@@ -79,7 +79,7 @@ class CharactersDataModule(LightningDataModule):
             shuffle=False,
         )
 
-    def test_dataloader(self):
+    def test_dataloader(self) -> DataLoader:
         return DataLoader(
             dataset=self.data_test,
             batch_size=self.batch_size,

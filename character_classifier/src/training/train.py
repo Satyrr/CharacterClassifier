@@ -1,15 +1,18 @@
+from typing import Any
+
 import pytorch_lightning as pl
 import torch
 import torch.utils.data
 from pytorch_lightning import loggers as pl_loggers
 from pytorch_lightning.callbacks import ModelCheckpoint
 
+from character_classifier.settings import STORAGE_DIR
 from character_classifier.src.datasets.datamodule import CharactersDataModule
 from character_classifier.src.models.classifier import CharacterClassifier
-from character_classifier.settings import STORAGE_DIR
 
 
-def train(model_cls, lr=0.01, num_epochs=3, batch_size=64, **kwargs):
+def train(model_cls: type, lr: float = 0.01, num_epochs: int = 3, batch_size: int = 64,
+          **kwargs) -> Any:
     """Train classifier."""
     pl.seed_everything(42)
 

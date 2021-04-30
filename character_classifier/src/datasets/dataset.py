@@ -1,6 +1,6 @@
 import math
 import pickle
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 
 import torch
 from torch.utils.data import Dataset
@@ -19,7 +19,7 @@ class BatchIndexedDataset(Dataset):
         self.x = torch.tensor(self.x)
         self.y = torch.tensor(self.y)
 
-    def __getitem__(self, index: torch.LongTensor):
+    def __getitem__(self, index: torch.LongTensor) -> Tuple[torch.FloatTensor, torch.LongTensor]:
         x, y = self.x[index], self.y[index]
 
         if self.transform:
@@ -27,5 +27,5 @@ class BatchIndexedDataset(Dataset):
 
         return x, y
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.y)

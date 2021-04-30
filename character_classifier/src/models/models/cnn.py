@@ -1,9 +1,12 @@
-from torch import nn
+from typing import Dict, Any
+
+import torch
 import torch.nn.functional as F
+from torch import nn
 
 
 class SimpleCNN(nn.Module):
-    def __init__(self, hparams: dict):
+    def __init__(self, hparams: Dict[str, Any]):
         super().__init__()
 
         kernel_size_1 = hparams.get('kernel_size_1', 5)
@@ -18,7 +21,7 @@ class SimpleCNN(nn.Module):
         self.fc1 = nn.Linear(121 * filters_num_2, 50)
         self.fc2 = nn.Linear(50, 36)
 
-    def forward(self, x):
+    def forward(self, x: torch.FloatTensor) -> torch.FloatTensor:
         batch_size = x.size(0)
         x = x.float().view(batch_size, 1, 56, 56)
 
